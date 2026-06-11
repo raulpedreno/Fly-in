@@ -1,0 +1,5 @@
+Objetos:
+    - Zona (Zone)
+    - Conexión (Connection)
+    - Grafo (Graph)
+    - Drone (Drone)
