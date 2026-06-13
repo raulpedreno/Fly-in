@@ -2,6 +2,7 @@
 
 from models.graph import Graph
 from models.zone import Zone
+from models.connection import Connection
 
 
 class Parser:
@@ -42,8 +43,14 @@ class Parser:
                     self._parse_zone_line(line, line_number, graph)
                     continue
 
-                print(f"Line {line_number}: {line}")
+                if line.startswith("connection:"):
+                    self._parse_connection_line(line, line_number, graph)
+                    continue
 
+                raise ValueError(
+                    f"Line {line_number}: unknown instruction: {line}"
+                )
+        graph.validate()
         return graph
     
     def _parse_zone_line(
@@ -79,3 +86,27 @@ class Parser:
             graph.set_end_zone(zone)
         else:
             graph.add_zone(zone)
+
+    def _parse_connection_line(
+        self,
+        line: str,
+        line_number: int,
+        graph: Graph,
+    ) -> None:
+        """Parse a connection definition line."""
+        content = line.removeprefix("connection:").strip()
+        parts = content.split("-")
+
+        if len(parts) != 2:
+            raise ValueError(
+                f"Line {line_number}: invalid connection definition"
+            )
+
+        zone_a_name = parts[0]
+        zone_b_name = parts[1]
+
+        zone_a = graph.get_zone(zone_a_name)
+        zone_b = graph.get_zone(zone_b_name)
+
+        connection = Connection(zone_a, zone_b)
+        graph.add_connection(connection)
