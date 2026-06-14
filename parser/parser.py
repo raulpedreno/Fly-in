@@ -60,8 +60,17 @@ class Parser:
         graph: Graph,
     ) -> None:
         """Parse a zone definition line."""
+        
         prefix, content = line.split(":", 1)
-        parts = content.strip().split()
+
+        try:
+            zone_content, metadata = self._split_metadata(content)
+        except ValueError as error:
+            raise ValueError(
+                f"Line {line_number}: {error}"
+            ) from error
+
+        parts = zone_content.split()
 
         if len(parts) != 3:
             raise ValueError(
@@ -78,7 +87,29 @@ class Parser:
                 f"Line {line_number}: invalid zone coordinates"
             ) from error
 
-        zone = Zone(name=name, x=x, y=y)
+        zone_type = metadata.get("zone", "normal")
+        color = metadata.get("color", "none")
+
+        try:
+            max_drones = int(metadata.get("max_drones", "1"))
+        except ValueError as error:
+            raise ValueError(
+                f"Line {line_number}: invalid max_drones value"
+            ) from error
+
+        try:
+            zone = Zone(
+                name=name,
+                x=x,
+                y=y,
+                zone_type=zone_type,
+                color=color,
+                max_drones=max_drones,
+            )
+        except ValueError as error:
+            raise ValueError(
+                f"Line {line_number}: {error}"
+            ) from error
 
         if prefix == "start_hub":
             graph.set_start_zone(zone)
@@ -110,3 +141,28 @@ class Parser:
 
         connection = Connection(zone_a, zone_b)
         graph.add_connection(connection)
+    
+    def _split_metadata(self, content: str) -> tuple[str, dict[str, str]]:
+        """Split line content into main content and metadata."""
+        if "[" not in content:
+            return content.strip(), {}
+
+        before_metadata, metadata_part = content.split("[", 1)
+
+        if not metadata_part.endswith("]"):
+            raise ValueError("invalid metadata block")
+
+        metadata_content = metadata_part.removesuffix("]").strip()
+        metadata: dict[str, str] = {}
+
+        if not metadata_content:
+            return before_metadata.strip(), metadata
+
+        for item in metadata_content.split():
+            if "=" not in item:
+                raise ValueError("invalid metadata item")
+
+            key, value = item.split("=", 1)
+            metadata[key] = value
+
+        return before_metadata.strip(), metadata
