@@ -13,6 +13,7 @@ def main() -> None:
     parsero = Parser("map.txt")
     graph = parsero.parse()
     
+    print("--------------------------------")
     print(f"{graph.zones}")
     print(f"{graph.connections}")
 

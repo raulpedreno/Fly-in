@@ -69,6 +69,18 @@ class Parser:
             raise ValueError(
                 f"Line {line_number}: {error}"
             ) from error
+        
+        valid_zone_metadata = {
+            "zone",
+            "color",
+            "max_drones",
+        }
+
+        for key in metadata:
+            if key not in valid_zone_metadata:
+                raise ValueError(
+                    f"Line {line_number}: unknown zone metadata: {key}"
+                )
 
         parts = zone_content.split()
 
@@ -126,7 +138,25 @@ class Parser:
     ) -> None:
         """Parse a connection definition line."""
         content = line.removeprefix("connection:").strip()
-        parts = content.split("-")
+
+        try:
+            connection_content, metadata = self._split_metadata(content)
+        except ValueError as error:
+            raise ValueError(
+                f"Line {line_number}: {error}"
+            ) from error
+        
+        valid_connection_metadata = {
+            "max_link_capacity",
+        }
+
+        for key in metadata:
+            if key not in valid_connection_metadata:
+                raise ValueError(
+                    f"Line {line_number}: unknown connection metadata: {key}"
+                )
+
+        parts = connection_content.split("-")
 
         if len(parts) != 2:
             raise ValueError(
@@ -139,7 +169,25 @@ class Parser:
         zone_a = graph.get_zone(zone_a_name)
         zone_b = graph.get_zone(zone_b_name)
 
-        connection = Connection(zone_a, zone_b)
+        try:
+            max_link_capacity = int(
+                metadata.get("max_link_capacity", "1")
+            )
+        except ValueError as error:
+            raise ValueError(
+                f"Line {line_number}: invalid max_link_capacity value"
+            ) from error
+
+        try:
+            connection = Connection(
+                zone_a,
+                zone_b,
+                max_link_capacity=max_link_capacity,
+            )
+        except ValueError as error:
+            raise ValueError(
+                f"Line {line_number}: {error}"
+            ) from error
         graph.add_connection(connection)
     
     def _split_metadata(self, content: str) -> tuple[str, dict[str, str]]:

@@ -21,6 +21,16 @@ class Zone:
         max_drones: int = 1,
     ) -> None:
 
+        if "-" in name:
+            raise ValueError(
+                f"Invalid zone name: {name}"
+            )
+
+        if not name:
+            raise ValueError(
+                "Zone name cannot be empty"
+            )
+
         if zone_type not in self.VALID_ZONE_TYPES:
             raise ValueError(
                 f"Invalid zone type: {zone_type}"
