@@ -3,3 +3,9 @@ Objetos:
     - Conexión (Connection)
     - Grafo (Graph)
     - Drone (Drone)
+
+coste de cada Zona(Dijkstra):
+    - normal     -> 1 turno
+    - priority   -> 1 turno
+    - restricted -> 2 turnos
+    - blocked    -> no se puede entrar

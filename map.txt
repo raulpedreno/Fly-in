@@ -1,6 +1,19 @@
 nb_drones: 2
 start_hub: start 0 0 [color=green]
 end_hub: end 10 10 [color=yellow]
-hub: A 1 1 [zone=restricted color=red max_drones=2]
+hub: A 1 1 [zone=restricted]
+hub: B 2 1 [zone=restricted]
+hub: C 3 1 [zone=restricted]
+hub: D 1 2 [zone=normal]
+hub: E 1 3 [zone=normal]
+hub: F 1 4 [zone=normal]
+hub: G 1 5 [zone=normal]
 connection: start-A
-connection: A-end
+connection: A-B
+connection: B-C
+connection: C-end
+connection: start-D
+connection: D-E
+connection: E-F
+connection: F-G
+connection: G-end
