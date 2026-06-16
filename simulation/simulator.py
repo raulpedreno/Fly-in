@@ -32,10 +32,35 @@ class Simulator:
         while not all(drone.is_delivered for drone in self.drones):
             turn_moves: list[str] = []
             planned_entries: dict[str, int] = {}
+            planned_connections: dict[str, int] = {}
 
             for drone in self.drones: ## un turno para todos los drones
                 if drone.is_delivered:
                     continue
+
+                if drone.in_transit_to is not None:
+                    drone.remaining_turns -= 1
+
+                    if drone.remaining_turns == 0:
+                        self.positions[drone.drone_id] += 1
+                        drone.current_zone = drone.in_transit_to
+                        turn_moves.append(
+                            f"D{drone.drone_id}-{drone.current_zone.name}"
+                        )
+                        drone.in_transit_to = None
+
+                        if drone.current_zone == self.assignments[
+                            drone.drone_id
+                        ][-1]:
+                            drone.is_delivered = True
+                    else:
+                        turn_moves.append(
+                            f"D{drone.drone_id}-"
+                            f"{drone.current_zone.name}_to_"
+                            f"{drone.in_transit_to.name}"
+                        )
+
+                    continue ##!!!
 
                 path = self.assignments[drone.drone_id]
                 current_index = self.positions[drone.drone_id]
@@ -44,9 +69,34 @@ class Simulator:
                     drone.is_delivered = True
                     continue
 
+## check conexion.max_link_capacity
                 next_index = current_index + 1
                 next_zone = path[next_index]
 
+                current_zone = path[current_index]
+                connection = self.graph.get_connection(
+                    current_zone,
+                    next_zone,
+                )
+                connection_key = (
+                    f"{connection.zone_a.name}-{connection.zone_b.name}"
+                )
+
+                current_connection_entries = planned_connections.get(
+                    connection_key,
+                    0,
+                )
+
+                if (
+                    current_connection_entries
+                    >= connection.max_link_capacity
+                ):
+                    continue
+
+                planned_connections[connection_key] = (
+                    current_connection_entries + 1
+                )
+## zone.max_drones
                 is_end_zone = next_zone == path[-1]
 
                 if not is_end_zone:
@@ -57,15 +107,25 @@ class Simulator:
 
                     planned_entries[next_zone.name] = current_entries + 1
 
-                self.positions[drone.drone_id] = next_index
-                drone.current_zone = next_zone
+## si la zona es restricted...
+                if next_zone.zone_type == "restricted":
+                    drone.in_transit_to = next_zone
+                    drone.remaining_turns = 1
 
-                turn_moves.append(
-                    f"D{drone.drone_id}-{next_zone.name}"
-                )
+                    turn_moves.append(
+                        f"D{drone.drone_id}-"
+                        f"{current_zone.name}_to_{next_zone.name}"
+                    )
+                else: 
+                    self.positions[drone.drone_id] = next_index
+                    drone.current_zone = next_zone
 
-                if next_zone == path[-1]:
-                    drone.is_delivered = True
+                    turn_moves.append(
+                        f"D{drone.drone_id}-{next_zone.name}"
+                    )
+
+                    if next_zone == path[-1]:
+                        drone.is_delivered = True
 
             if turn_moves:
                 output.append(" ".join(turn_moves))

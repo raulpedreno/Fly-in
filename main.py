@@ -11,22 +11,23 @@ from simulation.simulator import Simulator
 def main() -> None:
     """Run a temporary model test."""
     start = Zone("start", 0, 0)
-    a = Zone("A", 1, 0)
+    restricted = Zone("restricted", 1, 0, zone_type="restricted")
     end = Zone("end", 2, 0)
 
-    drones = [
-        Drone(1, start),
-        Drone(2, start),
-    ]
+    graph = Graph()
+    graph.add_zone(start)
+    graph.add_zone(restricted)
+    graph.add_zone(end)
+    graph.add_connection(Connection(start, restricted))
+    graph.add_connection(Connection(restricted, end))
 
-    path = [start, a, end]
+    drone = Drone(1, start)
+    path = [start, restricted, end]
 
     simulator = Simulator(
-        drones=drones,
-        assignments={
-            1: path,
-            2: path,
-        },
+        graph=graph,
+        drones=[drone],
+        assignments={1: path},
     )
 
     output = simulator.run()

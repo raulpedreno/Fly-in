@@ -15,6 +15,8 @@ def test_create_valid_drone() -> None:
     assert drone.drone_id == 1
     assert drone.current_zone == start
     assert drone.is_delivered is False
+    assert drone.in_transit_to is None
+    assert drone.remaining_turns == 0
 
 
 def test_invalid_drone_id_raises_error() -> None:

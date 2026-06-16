@@ -71,15 +71,22 @@ def test_simulator_multiple_drones_respects_zone_capacity() -> None:
         "D2-end",
     ]
 
-def test_multiple_drones_can_enter_end_same_turn() -> None:
-    """Test that multiple drones can reach end in the same turn."""
+
+def test_simulator_respects_connection_capacity() -> None:
+    """Test that connection capacity is respected."""
     start = Zone("start", 0, 0)
     end = Zone("end", 1, 0)
 
     graph = Graph()
     graph.add_zone(start)
     graph.add_zone(end)
-    graph.add_connection(Connection(start, end))
+    graph.add_connection(
+        Connection(
+            start,
+            end,
+            max_link_capacity=1,
+        )
+    )
 
     drones = [
         Drone(1, start),
@@ -100,6 +107,36 @@ def test_multiple_drones_can_enter_end_same_turn() -> None:
     output = simulator.run()
 
     assert output == [
-        "D1-end D2-end",
+        "D1-end",
+        "D2-end",
     ]
 
+def test_simulator_restricted_zone_takes_two_turns() -> None:
+    """Test that moving into a restricted zone takes two turns."""
+    start = Zone("start", 0, 0)
+    restricted = Zone("restricted", 1, 0, zone_type="restricted")
+    end = Zone("end", 2, 0)
+
+    graph = Graph()
+    graph.add_zone(start)
+    graph.add_zone(restricted)
+    graph.add_zone(end)
+    graph.add_connection(Connection(start, restricted))
+    graph.add_connection(Connection(restricted, end))
+
+    drone = Drone(1, start)
+    path = [start, restricted, end]
+
+    simulator = Simulator(
+        graph=graph,
+        drones=[drone],
+        assignments={1: path},
+    )
+
+    output = simulator.run()
+
+    assert output == [
+        "D1-start_to_restricted",
+        "D1-restricted",
+        "D1-end",
+    ]
