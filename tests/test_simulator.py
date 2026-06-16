@@ -136,7 +136,7 @@ def test_simulator_restricted_zone_takes_two_turns() -> None:
     output = simulator.run()
 
     assert output == [
-        "D1-start_to_restricted",
+        "D1-start-restricted",
         "D1-restricted",
         "D1-end",
     ]

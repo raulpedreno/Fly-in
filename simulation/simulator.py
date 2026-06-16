@@ -56,7 +56,7 @@ class Simulator:
                     else:
                         turn_moves.append(
                             f"D{drone.drone_id}-"
-                            f"{drone.current_zone.name}_to_"
+                            f"{drone.current_zone.name}-"
                             f"{drone.in_transit_to.name}"
                         )
 
@@ -114,7 +114,7 @@ class Simulator:
 
                     turn_moves.append(
                         f"D{drone.drone_id}-"
-                        f"{current_zone.name}_to_{next_zone.name}"
+                        f"{current_zone.name}-{next_zone.name}"
                     )
                 else: 
                     self.positions[drone.drone_id] = next_index

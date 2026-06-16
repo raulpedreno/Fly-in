@@ -1,37 +1,49 @@
 """Main entry point for the Fly-in project."""
 
-from models.connection import Connection
-from models.graph import Graph
-from models.zone import Zone
-from parser.parser import Parser
 from algorithms.pathfinder import Pathfinder
+from algorithms.scheduler import Scheduler
 from models.drone import Drone
+from parser.parser import Parser
 from simulation.simulator import Simulator
+from visualization.terminal_view import TerminalView
+
 
 def main() -> None:
-    """Run a temporary model test."""
-    start = Zone("start", 0, 0)
-    restricted = Zone("restricted", 1, 0, zone_type="restricted")
-    end = Zone("end", 2, 0)
+    """Run the Fly-in simulation."""
+    parser = Parser("map.txt")
+    graph = parser.parse()
 
-    graph = Graph()
-    graph.add_zone(start)
-    graph.add_zone(restricted)
-    graph.add_zone(end)
-    graph.add_connection(Connection(start, restricted))
-    graph.add_connection(Connection(restricted, end))
+    if graph.start_zone is None or graph.end_zone is None:
+        raise ValueError("Graph must have start and end zones")
 
-    drone = Drone(1, start)
-    path = [start, restricted, end]
+    pathfinder = Pathfinder(graph)
+    paths = pathfinder.find_all_paths(
+        graph.start_zone,
+        graph.end_zone,
+    )
+
+    scheduler = Scheduler()
+    assignments = scheduler.assign_paths(
+        graph.nb_drones,
+        paths,
+    )
+
+    drones = [
+        Drone(drone_id, graph.start_zone)
+        for drone_id in range(1, graph.nb_drones + 1)
+    ]
 
     simulator = Simulator(
         graph=graph,
-        drones=[drone],
-        assignments={1: path},
+        drones=drones,
+        assignments=assignments,
     )
 
-    output = simulator.run()
+    turns = simulator.run()
 
-    print(output)
+    view = TerminalView()
+    view.display_turns(turns)
+
+
 if __name__ == "__main__":
     main()
