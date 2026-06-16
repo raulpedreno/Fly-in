@@ -225,3 +225,45 @@ def test_validate_without_connections_raises_error() -> None:
 
     with pytest.raises(ValueError):
         graph.validate()
+
+def test_get_connection() -> None:
+    """Test that a connection can be retrieved."""
+    graph = Graph()
+    zone_a = Zone("A", 0, 0)
+    zone_b = Zone("B", 1, 1)
+
+    graph.add_zone(zone_a)
+    graph.add_zone(zone_b)
+
+    connection = Connection(zone_a, zone_b)
+    graph.add_connection(connection)
+
+    assert graph.get_connection(zone_a, zone_b) == connection
+
+
+def test_get_connection_bidirectional() -> None:
+    """Test that a connection can be retrieved bidirectionally."""
+    graph = Graph()
+    zone_a = Zone("A", 0, 0)
+    zone_b = Zone("B", 1, 1)
+
+    graph.add_zone(zone_a)
+    graph.add_zone(zone_b)
+
+    connection = Connection(zone_a, zone_b)
+    graph.add_connection(connection)
+
+    assert graph.get_connection(zone_b, zone_a) == connection
+
+
+def test_get_connection_unknown_raises_error() -> None:
+    """Test that missing connection raises an error."""
+    graph = Graph()
+    zone_a = Zone("A", 0, 0)
+    zone_b = Zone("B", 1, 1)
+
+    graph.add_zone(zone_a)
+    graph.add_zone(zone_b)
+
+    with pytest.raises(ValueError):
+        graph.get_connection(zone_a, zone_b)

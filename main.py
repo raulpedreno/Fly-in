@@ -5,22 +5,32 @@ from models.graph import Graph
 from models.zone import Zone
 from parser.parser import Parser
 from algorithms.pathfinder import Pathfinder
-
+from models.drone import Drone
+from simulation.simulator import Simulator
 
 def main() -> None:
     """Run a temporary model test."""
-    graph = Graph()
+    start = Zone("start", 0, 0)
+    a = Zone("A", 1, 0)
+    end = Zone("end", 2, 0)
 
-    parsero = Parser("map.txt")
-    graph = parsero.parse()
-    
-    print("--------------------------------")
+    drones = [
+        Drone(1, start),
+        Drone(2, start),
+    ]
 
-    start = graph.start_zone
-    end = graph.end_zone
-    pathfinder = Pathfinder(graph)
-    path = pathfinder.find_path(start, end)
+    path = [start, a, end]
 
-    print (path)
+    simulator = Simulator(
+        drones=drones,
+        assignments={
+            1: path,
+            2: path,
+        },
+    )
+
+    output = simulator.run()
+
+    print(output)
 if __name__ == "__main__":
     main()

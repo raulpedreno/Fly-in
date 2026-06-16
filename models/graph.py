@@ -56,8 +56,29 @@ class Graph:
 
         self.connections.append(connection)
 
-    """Return all zones directly connected to the given zone."""
+    def get_connection(self, zone_a: Zone, zone_b: Zone) -> Connection:
+        """Return the connection between two zones."""
+
+        for connection in self.connections:
+            same_direction = (
+                connection.zone_a.name == zone_a.name
+                and connection.zone_b.name == zone_b.name
+            )
+            opposite_direction = (
+                connection.zone_a.name == zone_b.name
+                and connection.zone_b.name == zone_a.name
+            )
+
+            if same_direction or opposite_direction:
+                return connection
+
+        raise ValueError(
+            f"No connection between {zone_a.name} and {zone_b.name}"
+        )
+
+
     def get_neighbors(self, zone: Zone) -> list[Zone]:
+        """Return all zones directly connected to the given zone."""
 
         neighbors: list[Zone] = []
 
@@ -69,8 +90,9 @@ class Graph:
 
         return neighbors
     
-    """Set the start zone of the graph."""
+
     def set_start_zone(self, zone: Zone) -> None:
+        """Set the start zone of the graph."""
 
         if self.start_zone is not None:
             raise ValueError("Start zone is already defined")
@@ -78,8 +100,9 @@ class Graph:
         self.start_zone = zone
         self.add_zone(zone)
 
-    """Set the end zone of the graph."""
+
     def set_end_zone(self, zone: Zone) -> None:
+        """Set the end zone of the graph."""
         
         if self.end_zone is not None:
             raise ValueError("End zone is already defined")
@@ -87,8 +110,9 @@ class Graph:
         self.end_zone = zone
         self.add_zone(zone)
 
-    """Validate that the graph has the required structure."""
+
     def validate(self) -> None:
+        """Validate that the graph has the required structure."""
 
         if self.start_zone is None:
             raise ValueError("Graph does not have a start zone")
@@ -102,8 +126,10 @@ class Graph:
         if self.nb_drones < 1:
             raise ValueError("Graph does not have a valid number of drones")
 
-    """Set the number of drones."""
+
     def set_nb_drones(self, nb_drones: int) -> None:
+        """Set the number of drones."""
+
         if nb_drones < 1:
             raise ValueError("nb_drones must be greater than 0")
 
