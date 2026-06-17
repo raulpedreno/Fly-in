@@ -19,7 +19,7 @@ class Simulator:
         self.assignments = assignments
         self.positions: dict[int, int] = {
             drone.drone_id: 0 for drone in drones
-        } ##dron_id - indice_ruta
+        }  # dron_id - indice_ruta
 
     def run(self) -> list[str]:
         """Run the simulation.
@@ -34,7 +34,7 @@ class Simulator:
             planned_entries: dict[str, int] = {}
             planned_connections: dict[str, int] = {}
 
-            for drone in self.drones: ## un turno para todos los drones
+            for drone in self.drones:  # un turno para todos los drones
                 if drone.is_delivered:
                     continue
 
@@ -60,7 +60,7 @@ class Simulator:
                             f"{drone.in_transit_to.name}"
                         )
 
-                    continue ##!!!
+                    continue  # !!!
 
                 path = self.assignments[drone.drone_id]
                 current_index = self.positions[drone.drone_id]
@@ -69,7 +69,7 @@ class Simulator:
                     drone.is_delivered = True
                     continue
 
-## check conexion.max_link_capacity
+# check conexion.max_link_capacity
                 next_index = current_index + 1
                 next_zone = path[next_index]
 
@@ -96,7 +96,7 @@ class Simulator:
                 planned_connections[connection_key] = (
                     current_connection_entries + 1
                 )
-## zone.max_drones
+# zone.max_drones
                 is_end_zone = next_zone == path[-1]
 
                 if not is_end_zone:
@@ -107,7 +107,7 @@ class Simulator:
 
                     planned_entries[next_zone.name] = current_entries + 1
 
-## si la zona es restricted...
+# si la zona es restricted...
                 if next_zone.zone_type == "restricted":
                     drone.in_transit_to = next_zone
                     drone.remaining_turns = 1
@@ -116,7 +116,7 @@ class Simulator:
                         f"D{drone.drone_id}-"
                         f"{current_zone.name}-{next_zone.name}"
                     )
-                else: 
+                else:
                     self.positions[drone.drone_id] = next_index
                     drone.current_zone = next_zone
 

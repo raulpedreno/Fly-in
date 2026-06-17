@@ -82,6 +82,7 @@ def test_find_path_without_solution_raises_error() -> None:
     with pytest.raises(ValueError):
         pathfinder.find_path(start, end)
 
+
 def test_movement_cost_normal_zone() -> None:
     """Test movement cost for a normal zone."""
     graph = Graph()
@@ -118,6 +119,7 @@ def test_movement_cost_blocked_zone_raises_error() -> None:
     with pytest.raises(ValueError):
         pathfinder.get_movement_cost(zone)
 
+
 def test_dijkstra_prefers_lower_cost_path() -> None:
     """Test that Dijkstra prefers a longer but cheaper path."""
     graph = Graph()
@@ -149,6 +151,7 @@ def test_dijkstra_prefers_lower_cost_path() -> None:
 
     assert path == [start, normal_a, normal_b, end]
 
+
 def test_dijkstra_prefers_priority_zone_on_cost_tie() -> None:
     """Test that priority zones are preferred when total cost ties."""
     graph = Graph()
@@ -173,6 +176,7 @@ def test_dijkstra_prefers_priority_zone_on_cost_tie() -> None:
     path = pathfinder.find_path(start, end)
 
     assert path == [start, priority, end]
+
 
 def test_find_all_paths_returns_multiple_paths() -> None:
     """Test finding multiple paths."""
@@ -222,6 +226,7 @@ def test_find_all_paths_ignores_blocked_zones() -> None:
 
     assert paths == []
 
+
 def test_get_path_cost() -> None:
     """Test total path cost calculation."""
     graph = Graph()
@@ -235,6 +240,7 @@ def test_get_path_cost() -> None:
     path = [start, normal, restricted, end]
 
     assert pathfinder.get_path_cost(path) == 4
+
 
 def test_find_all_paths_returns_sorted_by_cost() -> None:
     """Test that all paths are sorted by total cost."""

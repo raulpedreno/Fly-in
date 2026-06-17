@@ -34,7 +34,7 @@ class Parser:
 
                     graph.set_nb_drones(nb_drones)
                     continue
-                
+
                 if (
                     line.startswith("start_hub:")
                     or line.startswith("end_hub:")
@@ -52,7 +52,7 @@ class Parser:
                 )
         graph.validate()
         return graph
-    
+
     def _parse_zone_line(
         self,
         line: str,
@@ -60,7 +60,7 @@ class Parser:
         graph: Graph,
     ) -> None:
         """Parse a zone definition line."""
-        
+
         prefix, content = line.split(":", 1)
 
         try:
@@ -69,7 +69,7 @@ class Parser:
             raise ValueError(
                 f"Line {line_number}: {error}"
             ) from error
-        
+
         valid_zone_metadata = {
             "zone",
             "color",
@@ -145,7 +145,7 @@ class Parser:
             raise ValueError(
                 f"Line {line_number}: {error}"
             ) from error
-        
+
         valid_connection_metadata = {
             "max_link_capacity",
         }
@@ -189,7 +189,7 @@ class Parser:
                 f"Line {line_number}: {error}"
             ) from error
         graph.add_connection(connection)
-    
+
     def _split_metadata(self, content: str) -> tuple[str, dict[str, str]]:
         """Split line content into main content and metadata."""
         if "[" not in content:

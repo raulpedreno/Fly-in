@@ -6,6 +6,7 @@ from simulation.simulator import Simulator
 from models.connection import Connection
 from models.graph import Graph
 
+
 def test_simulator_single_drone() -> None:
     """Test simulation with one drone."""
     start = Zone("start", 0, 0)
@@ -34,6 +35,8 @@ def test_simulator_single_drone() -> None:
         "D1-A",
         "D1-end",
     ]
+
+
 def test_simulator_multiple_drones_respects_zone_capacity() -> None:
     """Test simulation respects zone capacity."""
     start = Zone("start", 0, 0)
@@ -110,6 +113,7 @@ def test_simulator_respects_connection_capacity() -> None:
         "D1-end",
         "D2-end",
     ]
+
 
 def test_simulator_restricted_zone_takes_two_turns() -> None:
     """Test that moving into a restricted zone takes two turns."""

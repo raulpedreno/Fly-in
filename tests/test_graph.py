@@ -44,6 +44,7 @@ def test_duplicate_zone_raises_error() -> None:
     with pytest.raises(ValueError):
         graph.add_zone(Zone("A", 1, 1))
 
+
 def test_add_connection() -> None:
     """Test that a connection can be added to the graph."""
     graph = Graph()
@@ -225,6 +226,7 @@ def test_validate_without_connections_raises_error() -> None:
 
     with pytest.raises(ValueError):
         graph.validate()
+
 
 def test_get_connection() -> None:
     """Test that a connection can be retrieved."""

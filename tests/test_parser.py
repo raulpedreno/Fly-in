@@ -2,9 +2,10 @@
 
 from parser.parser import Parser
 import pytest
+from pathlib import Path
 
 
-def test_parse_valid_basic_map(tmp_path) -> None:
+def test_parse_valid_basic_map(tmp_path: Path) -> None:
     """Test parsing a valid basic map."""
     map_file = tmp_path / "map.txt"
     map_file.write_text(
@@ -29,7 +30,8 @@ def test_parse_valid_basic_map(tmp_path) -> None:
     assert graph.end_zone.name == "end"
     assert len(graph.connections) == 1
 
-def test_parse_zone_metadata(tmp_path) -> None:
+
+def test_parse_zone_metadata(tmp_path: Path) -> None:
     """Test parsing zone metadata."""
     map_file = tmp_path / "map.txt"
     map_file.write_text(
@@ -55,7 +57,8 @@ def test_parse_zone_metadata(tmp_path) -> None:
     assert zone.color == "red"
     assert zone.max_drones == 2
 
-def test_parse_connection_metadata(tmp_path) -> None:
+
+def test_parse_connection_metadata(tmp_path: Path) -> None:
     """Test parsing connection metadata."""
     map_file = tmp_path / "map.txt"
     map_file.write_text(
@@ -75,7 +78,8 @@ def test_parse_connection_metadata(tmp_path) -> None:
 
     assert graph.connections[0].max_link_capacity == 3
 
-def test_parse_unknown_zone_metadata_raises_error(tmp_path) -> None:
+
+def test_parse_unknown_zone_metadata_raises_error(tmp_path: Path) -> None:
     """Test that unknown zone metadata raises an error."""
     map_file = tmp_path / "map.txt"
     map_file.write_text(
@@ -98,7 +102,7 @@ def test_parse_unknown_zone_metadata_raises_error(tmp_path) -> None:
         parser.parse()
 
 
-def test_parse_invalid_zone_type_raises_error(tmp_path) -> None:
+def test_parse_invalid_zone_type_raises_error(tmp_path: Path) -> None:
     """Test that invalid zone type raises an error."""
     map_file = tmp_path / "map.txt"
     map_file.write_text(
@@ -121,7 +125,7 @@ def test_parse_invalid_zone_type_raises_error(tmp_path) -> None:
         parser.parse()
 
 
-def test_parse_connection_to_unknown_zone_raises_error(tmp_path) -> None:
+def test_parse_connection_to_unknown_zone_raises_error(tmp_path: Path) -> None:
     """Test that connection to unknown zone raises an error."""
     map_file = tmp_path / "map.txt"
     map_file.write_text(

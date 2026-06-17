@@ -12,7 +12,7 @@ class Drone:
 
         self.drone_id = drone_id
         self.current_zone = current_zone
-        self.is_delivered = False   ##ha llegado a end_hub?
+        self.is_delivered = False  # ha llegado a end_hub?
         self.in_transit_to: Zone | None = None
         self.remaining_turns: int = 0
 

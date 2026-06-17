@@ -1,5 +1,6 @@
 """Main entry point for the Fly-in project."""
 
+import sys
 from algorithms.pathfinder import Pathfinder
 from algorithms.scheduler import Scheduler
 from models.drone import Drone
@@ -10,7 +11,11 @@ from visualization.terminal_view import TerminalView
 
 def main() -> None:
     """Run the Fly-in simulation."""
-    parser = Parser("map.txt")
+
+    if len(sys.argv) != 2:
+        raise ValueError("Usage: python3 main.py <map_file>")
+
+    parser = Parser(sys.argv[1])
     graph = parser.parse()
 
     if graph.start_zone is None or graph.end_zone is None:
@@ -46,4 +51,8 @@ def main() -> None:
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    except ValueError as error:
+        print(f"Error: {error}")
+        sys.exit(1)

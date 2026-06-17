@@ -15,6 +15,7 @@ class Graph:
         self.nb_drones: int = 0
 
     """Add a zone to the graph."""
+
     def add_zone(self, zone: Zone) -> None:
         if zone.name in self.zones:
             raise ValueError(
@@ -24,6 +25,7 @@ class Graph:
         self.zones[zone.name] = zone
 
     """Return a zone by its name."""
+
     def get_zone(self, name: str) -> Zone:
 
         if name not in self.zones:
@@ -34,6 +36,7 @@ class Graph:
         return self.zones[name]
 
     """Add a connection to the graph."""
+
     def add_connection(self, connection: Connection) -> None:
 
         zone_a_name = connection.zone_a.name
@@ -76,7 +79,6 @@ class Graph:
             f"No connection between {zone_a.name} and {zone_b.name}"
         )
 
-
     def get_neighbors(self, zone: Zone) -> list[Zone]:
         """Return all zones directly connected to the given zone."""
 
@@ -89,7 +91,6 @@ class Graph:
                 neighbors.append(connection.zone_a)
 
         return neighbors
-    
 
     def set_start_zone(self, zone: Zone) -> None:
         """Set the start zone of the graph."""
@@ -100,16 +101,14 @@ class Graph:
         self.start_zone = zone
         self.add_zone(zone)
 
-
     def set_end_zone(self, zone: Zone) -> None:
         """Set the end zone of the graph."""
-        
+
         if self.end_zone is not None:
             raise ValueError("End zone is already defined")
 
         self.end_zone = zone
         self.add_zone(zone)
-
 
     def validate(self) -> None:
         """Validate that the graph has the required structure."""
@@ -125,7 +124,6 @@ class Graph:
 
         if self.nb_drones < 1:
             raise ValueError("Graph does not have a valid number of drones")
-
 
     def set_nb_drones(self, nb_drones: int) -> None:
         """Set the number of drones."""
