@@ -254,3 +254,29 @@ def test_validate_assignments_path_wrong_end_raises_error() -> None:
     with pytest.raises(ValueError):
         simulator._validate_assignments()
 
+def test_validate_assignments_path_without_connection_raises_error() -> None:
+    """Test path with disconnected consecutive zones raises an error."""
+    start = Zone("start", 0, 0)
+    a = Zone("A", 1, 0)
+    end = Zone("end", 2, 0)
+
+    graph = Graph()
+    graph.set_start_zone(start)
+    graph.add_zone(a)
+    graph.set_end_zone(end)
+
+    graph.add_connection(Connection(start, a))
+    # Missing connection: A-end
+
+    drone = Drone(1, start)
+
+    simulator = Simulator(
+        graph=graph,
+        drones=[drone],
+        assignments={
+            1: [start, a, end],
+        },
+    )
+
+    with pytest.raises(ValueError):
+        simulator._validate_assignments()

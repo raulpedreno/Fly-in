@@ -4,46 +4,94 @@ import pytest
 
 from algorithms.scheduler import Scheduler
 from models.zone import Zone
+from models.graph import Graph
 
 
-def test_assign_paths_single_path() -> None:
-    """Test assigning all drones to a single path."""
-    scheduler = Scheduler()
-
-    start = Zone("start", 0, 0)
-    end = Zone("end", 1, 1)
-    path = [start, end]
-
-    assignments = scheduler.assign_paths(3, [path])
-
-    assert assignments[1] == path
-    assert assignments[2] == path
-    assert assignments[3] == path
-
-
-def test_assign_paths_multiple_paths() -> None:
-    """Test assigning drones across multiple paths."""
-    scheduler = Scheduler()
+def test_assign_paths_prefers_shorter_path() -> None:
+    """Test assigning more drones to shorter paths."""
+    graph = Graph()
+    scheduler = Scheduler(graph)
 
     start = Zone("start", 0, 0)
     a = Zone("A", 1, 0)
     b = Zone("B", 1, 1)
-    end = Zone("end", 2, 0)
+    c = Zone("C", 2, 1)
+    end = Zone("end", 3, 0)
 
-    path_1 = [start, a, end]
-    path_2 = [start, b, end]
+    short_path = [start, a, end]
+    long_path = [start, b, c, end]
 
-    assignments = scheduler.assign_paths(4, [path_1, path_2])
+    assignments = scheduler.assign_paths(
+        3,
+        [short_path, long_path],
+    )
 
-    assert assignments[1] == path_1
-    assert assignments[2] == path_2
-    assert assignments[3] == path_1
-    assert assignments[4] == path_2
+    assert assignments[1] == short_path
+    assert assignments[2] == short_path
+    assert assignments[3] == long_path
 
+def test_assign_paths_invalid_nb_drones_raises_error() -> None:
+    """Test that invalid drone count raises an error."""
+    graph = Graph()
+    scheduler = Scheduler(graph)
 
-def test_assign_paths_without_paths_raises_error() -> None:
-    """Test that assigning without paths raises an error."""
-    scheduler = Scheduler()
+    start = Zone("start", 0, 0)
+    end = Zone("end", 1, 0)
+    path = [start, end]
 
     with pytest.raises(ValueError):
-        scheduler.assign_paths(3, [])
+        scheduler.assign_paths(0, [path])
+
+def test_scheduler_get_path_cost_normal_path() -> None:
+    """Test scheduler path cost with normal zones."""
+    graph = Graph()
+    scheduler = Scheduler(graph)
+
+    start = Zone("start", 0, 0)
+    a = Zone("A", 1, 0)
+    end = Zone("end", 2, 0)
+
+    path = [start, a, end]
+
+    assert scheduler._get_path_cost(path) == 2
+
+
+def test_scheduler_get_path_cost_with_restricted_zone() -> None:
+    """Test scheduler path cost with restricted zone."""
+    graph = Graph()
+    scheduler = Scheduler(graph)
+
+    start = Zone("start", 0, 0)
+    restricted = Zone("restricted", 1, 0, zone_type="restricted")
+    end = Zone("end", 2, 0)
+
+    path = [start, restricted, end]
+
+    assert scheduler._get_path_cost(path) == 3
+
+def test_scheduler_get_path_cost_normal_path() -> None:
+    """Test scheduler path cost with normal zones."""
+    graph = Graph()
+    scheduler = Scheduler(graph)
+
+    start = Zone("start", 0, 0)
+    a = Zone("A", 1, 0)
+    end = Zone("end", 2, 0)
+
+    path = [start, a, end]
+
+    assert scheduler._get_path_cost(path) == 2
+
+
+def test_scheduler_get_path_cost_with_restricted_zone() -> None:
+    """Test scheduler path cost with restricted zone."""
+    graph = Graph()
+    scheduler = Scheduler(graph)
+
+    start = Zone("start", 0, 0)
+    restricted = Zone("restricted", 1, 0, zone_type="restricted")
+    end = Zone("end", 2, 0)
+
+    path = [start, restricted, end]
+
+    assert scheduler._get_path_cost(path) == 3

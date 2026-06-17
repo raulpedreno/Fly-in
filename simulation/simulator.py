@@ -91,6 +91,12 @@ class Simulator:
                     f"Path for drone D{drone.drone_id} "
                     "does not end at end zone"
                 )
+            for index in range(len(path) - 1):
+                current_zone = path[index]
+                next_zone = path[index + 1]
+
+                self.graph.get_connection(current_zone, next_zone)
+
 
     def run(self) -> list[str]:
         """Run the simulation.

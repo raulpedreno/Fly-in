@@ -27,7 +27,7 @@ def main() -> None:
         graph.end_zone,
     )
 
-    scheduler = Scheduler()
+    scheduler = Scheduler(graph)
     assignments = scheduler.assign_paths(
         graph.nb_drones,
         paths,
