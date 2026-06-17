@@ -9,3 +9,5 @@ coste de cada Zona(Dijkstra):
     - priority   -> 1 turno
     - restricted -> 2 turnos
     - blocked    -> no se puede entrar
+
+autopep8 --in-place --recursive --aggressive --aggressive .
