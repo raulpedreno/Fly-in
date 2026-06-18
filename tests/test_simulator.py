@@ -41,6 +41,7 @@ def test_get_zone_occupancy_counts_drones_in_zones() -> None:
         "A": 1,
     }
 
+
 def test_get_zone_occupancy_ignores_delivered_and_transit_drones() -> None:
     """Test occupancy ignores delivered and in-transit drones."""
     start = Zone("start", 0, 0)
@@ -107,6 +108,7 @@ def test_validate_zone_occupancy_raises_when_zone_exceeds_capacity() -> None:
     with pytest.raises(ValueError):
         simulator._validate_zone_occupancy()
 
+
 def test_validate_zone_occupancy_allows_multiple_drones_in_start() -> None:
     """Test validation allows multiple drones in start zone."""
     start = Zone("start", 0, 0, max_drones=1)
@@ -133,6 +135,7 @@ def test_validate_zone_occupancy_allows_multiple_drones_in_start() -> None:
 
     simulator._validate_zone_occupancy()
 
+
 def test_validate_zone_occupancy_allows_multiple_drones_in_end() -> None:
     """Test validation allows multiple drones in end zone."""
     start = Zone("start", 0, 0)
@@ -158,6 +161,7 @@ def test_validate_zone_occupancy_allows_multiple_drones_in_end() -> None:
     )
 
     simulator._validate_zone_occupancy()
+
 
 def test_validate_assignments_missing_assignment_raises_error() -> None:
     """Test missing drone assignment raises an error."""
@@ -228,6 +232,7 @@ def test_validate_assignments_path_wrong_start_raises_error() -> None:
     with pytest.raises(ValueError):
         simulator._validate_assignments()
 
+
 def test_validate_assignments_path_wrong_end_raises_error() -> None:
     """Test path that does not end at graph end zone raises an error."""
     start = Zone("start", 0, 0)
@@ -253,6 +258,7 @@ def test_validate_assignments_path_wrong_end_raises_error() -> None:
 
     with pytest.raises(ValueError):
         simulator._validate_assignments()
+
 
 def test_validate_assignments_path_without_connection_raises_error() -> None:
     """Test path with disconnected consecutive zones raises an error."""
@@ -281,6 +287,7 @@ def test_validate_assignments_path_without_connection_raises_error() -> None:
     with pytest.raises(ValueError):
         simulator._validate_assignments()
 
+
 def test_simulator_detects_deadlock_when_no_drone_moves() -> None:
     """Test simulator raises an error when no drone can move."""
     start = Zone("start", 0, 0)
@@ -308,6 +315,7 @@ def test_simulator_detects_deadlock_when_no_drone_moves() -> None:
 
     with pytest.raises(ValueError):
         simulator.run()
+
 
 def test_restricted_zone_respects_connection_capacity() -> None:
     """Test restricted movement respects connection capacity."""
@@ -352,6 +360,7 @@ def test_restricted_zone_respects_connection_capacity() -> None:
         "D1-end D2-restricted",
         "D2-end",
     ]
+
 
 def test_restricted_zone_capacity_when_arriving_from_different_paths() -> None:
     """Test restricted zone capacity with arrivals from different paths."""

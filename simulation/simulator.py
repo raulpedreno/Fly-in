@@ -97,7 +97,6 @@ class Simulator:
 
                 self.graph.get_connection(current_zone, next_zone)
 
-
     def run(self) -> list[str]:
         """Run the simulation.
 
@@ -126,7 +125,7 @@ class Simulator:
                 if drone.is_delivered:
                     continue
 
-## drones en transito:-----------------------------------------------------------------------
+# drones en transito:-----------------------------------------------------
                 if drone.in_transit_to is not None:
                     drone.remaining_turns -= 1
 
@@ -151,7 +150,7 @@ class Simulator:
 
                     continue  # !!!
 
-## preparacion del movimiento----------------------------------------------------------------
+# preparacion del movimiento----------------------------------------------
                 path = self.assignments[drone.drone_id]
                 current_index = self.positions[drone.drone_id]
 
@@ -163,7 +162,7 @@ class Simulator:
                 next_zone = path[next_index]
                 current_zone = path[current_index]
 
-## comprobar capacidad de conexión------------------------------------------------------------
+# comprobar capacidad de conexión-----------------------------------------
                 planned_exits[current_zone.name] = (
                     planned_exits.get(current_zone.name, 0) + 1
                 )
@@ -192,7 +191,7 @@ class Simulator:
                     current_connection_entries + 1
                 )
 
-# comprobar capacidad de la zona destino-----------------------------------------------------
+# comprobar capacidad de la zona destino----------------------------------
                 is_end_zone = next_zone == path[-1]
 
                 if not is_end_zone:
@@ -212,7 +211,8 @@ class Simulator:
 
                     planned_entries[next_zone.name] = entries_to_zone + 1
 
-# ejecutar el movimiento (normal vs restricted)------------------------------------------------.
+# ejecutar el movimiento (normal vs
+# restricted)------------------------------------------------.
                 if next_zone.zone_type == "restricted":
                     drone.in_transit_to = next_zone
                     drone.remaining_turns = 1

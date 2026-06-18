@@ -39,7 +39,8 @@ class Scheduler:
         """Estimate how loaded a path is."""
 
         path_cost = self._get_path_cost(path)
-        first_capacity = self._get_first_connection_capacity(path) ## Cuantos drones salen por turno
+        first_capacity = self._get_first_connection_capacity(
+            path)  # Cuantos drones salen por turno
 
         return path_cost + (assigned_drones // first_capacity)
 
@@ -64,9 +65,9 @@ class Scheduler:
             best_path_index = min(
                 range(len(paths)),
                 key=lambda index: self._estimate_path_load_score(
-                    paths[index], path_loads[index],)
-                ,)
-##Elige la ruta cuyo coste total = (longitud de la ruta) + (número de drones ya asignados a esa ruta) sea el menor // mwx_link_capacity.
+                    paths[index], path_loads[index],),)
+# Elige la ruta cuyo coste total = (longitud de la ruta) + (número de
+# drones ya asignados a esa ruta) sea el menor // mwx_link_capacity.
 
             assignments[drone_id] = paths[best_path_index]
             path_loads[best_path_index] += 1

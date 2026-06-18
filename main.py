@@ -53,7 +53,14 @@ def main() -> None:
     turns = simulator.run()
 
     view = TerminalView()
+    view.display_banner()
+    view.display_loading_sequence()
     view.display_turns(turns)
+    view.display_summary(
+        turns=turns,
+        nb_drones=graph.nb_drones,
+        routes_count=len(paths),
+    )
 
 
 if __name__ == "__main__":
