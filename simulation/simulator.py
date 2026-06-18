@@ -108,7 +108,7 @@ class Simulator:
         self._validate_assignments()
         output: list[str] = []
 
-        turns = 0
+        turn_count = 0
 
         while not all(drone.is_delivered for drone in self.drones):
             turn_count += 1
@@ -234,5 +234,7 @@ class Simulator:
 
             if turn_moves:
                 output.append(" ".join(turn_moves))
+            else:
+                raise ValueError("Simulation deadlock detected")
 
         return output

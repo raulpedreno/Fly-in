@@ -280,3 +280,124 @@ def test_validate_assignments_path_without_connection_raises_error() -> None:
 
     with pytest.raises(ValueError):
         simulator._validate_assignments()
+
+def test_simulator_detects_deadlock_when_no_drone_moves() -> None:
+    """Test simulator raises an error when no drone can move."""
+    start = Zone("start", 0, 0)
+    a = Zone("A", 1, 0, max_drones=1)
+    end = Zone("end", 2, 0)
+
+    graph = Graph()
+    graph.set_start_zone(start)
+    graph.add_zone(a)
+    graph.set_end_zone(end)
+    graph.add_connection(Connection(start, a))
+    graph.add_connection(Connection(a, end))
+
+    drone = Drone(1, a)
+
+    simulator = Simulator(
+        graph=graph,
+        drones=[drone],
+        assignments={
+            1: [a, end],
+        },
+    )
+
+    graph.connections.clear()
+
+    with pytest.raises(ValueError):
+        simulator.run()
+
+def test_restricted_zone_respects_connection_capacity() -> None:
+    """Test restricted movement respects connection capacity."""
+    start = Zone("start", 0, 0)
+    restricted = Zone("restricted", 1, 0, zone_type="restricted")
+    end = Zone("end", 2, 0)
+
+    graph = Graph()
+    graph.set_start_zone(start)
+    graph.add_zone(restricted)
+    graph.set_end_zone(end)
+    graph.add_connection(
+        Connection(
+            start,
+            restricted,
+            max_link_capacity=1,
+        )
+    )
+    graph.add_connection(Connection(restricted, end))
+
+    drones = [
+        Drone(1, start),
+        Drone(2, start),
+    ]
+
+    path = [start, restricted, end]
+
+    simulator = Simulator(
+        graph=graph,
+        drones=drones,
+        assignments={
+            1: path,
+            2: path,
+        },
+    )
+
+    output = simulator.run()
+
+    assert output == [
+        "D1-start-restricted",
+        "D1-restricted D2-start-restricted",
+        "D1-end D2-restricted",
+        "D2-end",
+    ]
+
+def test_restricted_zone_capacity_when_arriving_from_different_paths() -> None:
+    """Test restricted zone capacity with arrivals from different paths."""
+    start = Zone("start", 0, 0)
+    a = Zone("A", 1, 0)
+    b = Zone("B", 1, 1)
+    restricted = Zone(
+        "restricted",
+        2,
+        0,
+        zone_type="restricted",
+        max_drones=1,
+    )
+    end = Zone("end", 3, 0)
+
+    graph = Graph()
+    graph.set_start_zone(start)
+    graph.add_zone(a)
+    graph.add_zone(b)
+    graph.add_zone(restricted)
+    graph.set_end_zone(end)
+
+    graph.add_connection(Connection(start, a))
+    graph.add_connection(Connection(start, b))
+    graph.add_connection(Connection(a, restricted))
+    graph.add_connection(Connection(b, restricted))
+    graph.add_connection(Connection(restricted, end))
+
+    drone_1 = Drone(1, start)
+    drone_2 = Drone(2, start)
+
+    simulator = Simulator(
+        graph=graph,
+        drones=[drone_1, drone_2],
+        assignments={
+            1: [start, a, restricted, end],
+            2: [start, b, restricted, end],
+        },
+    )
+
+    output = simulator.run()
+
+    assert output == [
+        "D1-A D2-B",
+        "D1-A-restricted",
+        "D1-restricted D2-B-restricted",
+        "D1-end D2-restricted",
+        "D2-end",
+    ]
