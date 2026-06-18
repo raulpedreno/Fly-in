@@ -72,6 +72,7 @@ class Pathfinder:
         start: Zone,
         end: Zone,
         max_paths: int = 10,
+        max_depth: int = 20,
     ) -> list[list[Zone]]:
         """Find multiple valid paths between two zones."""
 
@@ -79,21 +80,23 @@ class Pathfinder:
         stack: list[list[Zone]] = [[start]]
 
         while stack and len(paths) < max_paths:
-            path = stack.pop()
-            current_zone = path[-1]
+            one_path = stack.pop()
+            current_zone = one_path[-1]
+            if len(one_path) > max_depth:
+                continue
 
             if current_zone.name == end.name:
-                paths.append(path)
+                paths.append(one_path)
                 continue
 
             for neighbor in self.graph.get_neighbors(current_zone):
-                if neighbor.name in {zone.name for zone in path}:
+                if neighbor.name in {zone.name for zone in one_path}:
                     continue
 
                 if neighbor.zone_type == "blocked":
                     continue
 
-                stack.append(path + [neighbor])
+                stack.append(one_path + [neighbor])
 
         return sorted(paths, key=self.get_path_cost)
 

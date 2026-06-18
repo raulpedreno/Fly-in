@@ -21,11 +21,17 @@ def main() -> None:
     if graph.start_zone is None or graph.end_zone is None:
         raise ValueError("Graph must have start and end zones")
 
+    max_depth = min(len(graph.zones), 30)
+
     pathfinder = Pathfinder(graph)
     paths = pathfinder.find_all_paths(
         graph.start_zone,
         graph.end_zone,
+        max_depth=max_depth,
     )
+
+    if not paths:
+        raise ValueError("No valid path found from start to end")
 
     scheduler = Scheduler(graph)
     assignments = scheduler.assign_paths(
