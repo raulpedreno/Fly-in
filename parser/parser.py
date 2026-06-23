@@ -22,7 +22,7 @@ class Parser:
 
                 if not line or line.startswith("#"):
                     continue
-                
+
                 if not first_instruction_found:
                     first_instruction_found = True
 

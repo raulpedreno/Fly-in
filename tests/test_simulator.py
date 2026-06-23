@@ -411,6 +411,7 @@ def test_restricted_zone_capacity_when_arriving_from_different_paths() -> None:
         "D2-end",
     ]
 
+
 def test_restricted_drone_must_arrive_next_turn() -> None:
     """Test drone in transit to restricted zone arrives next turn."""
     start = Zone("start", 0, 0)

@@ -144,6 +144,8 @@ def test_parse_connection_to_unknown_zone_raises_error(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError):
         parser.parse()
+
+
 def test_nb_drones_must_be_first_instruction(
     tmp_path: Path,
 ) -> None:

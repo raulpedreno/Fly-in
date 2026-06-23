@@ -53,6 +53,7 @@ def test_format_connection_movement() -> None:
     assert "start-restricted" in result
     assert "⇢" in result
 
+
 def test_display_turns_outputs_mission_format(capsys) -> None:
     """Test display_turns prints mission formatted turns."""
     view = TerminalView()
@@ -84,6 +85,7 @@ def test_display_summary_outputs_final_stats(capsys) -> None:
     assert "Delivered drones : 1" in captured.out
     assert "Total turns      : 2" in captured.out
     assert "Routes computed  : 2" in captured.out
+
 
 def test_display_raw_turns_outputs_subject_format(
     capsys: CaptureFixture[str],

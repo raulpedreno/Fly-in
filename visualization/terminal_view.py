@@ -1,6 +1,7 @@
 """Terminal visualization for the Fly-in project."""
 from time import sleep
 
+
 class TerminalView:
     """Display simulation output in the terminal."""
 
@@ -114,13 +115,13 @@ class TerminalView:
 
             for movement in movements:
                 print(self._format_movement(movement))
-            
+
             sleep(0.5)
 
     def simple_display_turns(self, turns: list[str]) -> None:
         for turn in turns:
-            print (turn)
-    
+            print(turn)
+
     def display_summary(
         self,
         turns: list[str],
@@ -156,7 +157,10 @@ class TerminalView:
         print(f"Total turns      : {len(turns)}")
         print(f"Routes computed  : {routes_count}")
         print()
-        print(self.colorize("All drones successfully reached destination.", "green"))
+        print(
+            self.colorize(
+                "All drones successfully reached destination.",
+                "green"))
         print(separator)
         print()
 

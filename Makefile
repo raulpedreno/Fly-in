@@ -20,8 +20,8 @@ clean:
 	find . -type d -name ".pytest_cache" -exec rm -rf {} +
 
 lint:
-	flake8 .
-	mypy . --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
+	flake8 . --exclude .venv
+	mypy . --exclude '\.venv' --warn-return-any --warn-unused-ignores --ignore-missing-imports --disallow-untyped-defs --check-untyped-defs
 
 lint-strict:
 	flake8 .
