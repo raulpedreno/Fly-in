@@ -14,6 +14,7 @@ class Parser:
     def parse(self) -> Graph:
         """Parse the input file."""
         graph = Graph()
+        first_instruction_found = False
 
         with open(self.file_path, "r", encoding="utf-8") as file:
             for line_number, raw_line in enumerate(file, start=1):
@@ -21,6 +22,15 @@ class Parser:
 
                 if not line or line.startswith("#"):
                     continue
+                
+                if not first_instruction_found:
+                    first_instruction_found = True
+
+                    if not line.startswith("nb_drones:"):
+                        raise ValueError(
+                            f"Line {line_number}: "
+                            "first instruction must be nb_drones"
+                        )
 
                 if line.startswith("nb_drones:"):
                     value = line.removeprefix("nb_drones:").strip()

@@ -1,6 +1,7 @@
 """Tests for the TerminalView."""
 
 from visualization.terminal_view import TerminalView
+from pytest import CaptureFixture
 
 
 def test_colorize_supported_color() -> None:
@@ -83,3 +84,23 @@ def test_display_summary_outputs_final_stats(capsys) -> None:
     assert "Delivered drones : 1" in captured.out
     assert "Total turns      : 2" in captured.out
     assert "Routes computed  : 2" in captured.out
+
+def test_display_raw_turns_outputs_subject_format(
+    capsys: CaptureFixture[str],
+) -> None:
+    """Test raw turns are printed exactly in subject format."""
+    view = TerminalView()
+
+    view.display_raw_turns(
+        [
+            "D1-A D2-B",
+            "D1-end D2-end",
+        ]
+    )
+
+    captured = capsys.readouterr()
+
+    assert captured.out == (
+        "D1-A D2-B\n"
+        "D1-end D2-end\n"
+    )

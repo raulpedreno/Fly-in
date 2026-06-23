@@ -159,3 +159,12 @@ class TerminalView:
         print(self.colorize("All drones successfully reached destination.", "green"))
         print(separator)
         print()
+
+    def display_raw_turns(self, turns: list[str]) -> None:
+        """Display raw simulation output required by the subject.
+
+        Args:
+            turns: Simulation output lines.
+        """
+        for turn in turns:
+            print(turn)

@@ -410,3 +410,38 @@ def test_restricted_zone_capacity_when_arriving_from_different_paths() -> None:
         "D1-end D2-restricted",
         "D2-end",
     ]
+
+def test_restricted_drone_must_arrive_next_turn() -> None:
+    """Test drone in transit to restricted zone arrives next turn."""
+    start = Zone("start", 0, 0)
+    restricted = Zone("restricted", 1, 0, zone_type="restricted")
+    end = Zone("end", 2, 0)
+
+    graph = Graph()
+    graph.set_start_zone(start)
+    graph.add_zone(restricted)
+    graph.set_end_zone(end)
+    graph.add_connection(Connection(start, restricted))
+    graph.add_connection(Connection(restricted, end))
+
+    drone = Drone(1, start)
+
+    simulator = Simulator(
+        graph=graph,
+        drones=[drone],
+        assignments={
+            1: [start, restricted, end],
+        },
+    )
+
+    output = simulator.run()
+
+    assert output == [
+        "D1-start-restricted",
+        "D1-restricted",
+        "D1-end",
+    ]
+
+    assert drone.in_transit_to is None
+    assert drone.remaining_turns == 0
+    assert drone.is_delivered is True

@@ -144,3 +144,25 @@ def test_parse_connection_to_unknown_zone_raises_error(tmp_path: Path) -> None:
 
     with pytest.raises(ValueError):
         parser.parse()
+def test_nb_drones_must_be_first_instruction(
+    tmp_path: Path,
+) -> None:
+    """Test nb_drones must be the first instruction."""
+    map_file = tmp_path / "map.txt"
+
+    map_file.write_text(
+        "\n".join(
+            [
+                "start_hub: start 0 0",
+                "nb_drones: 1",
+                "end_hub: end 1 1",
+                "connection: start-end",
+            ]
+        ),
+        encoding="utf-8",
+    )
+
+    parser = Parser(str(map_file))
+
+    with pytest.raises(ValueError):
+        parser.parse()

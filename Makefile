@@ -4,7 +4,7 @@ install:
 	$(PYTHON) -m pip install -r requirements.txt
 
 run:
-	$(PYTHON) main.py 
+	$(PYTHON) main.py map.txt
 
 debug:
 	$(PYTHON) -m pdb main.py

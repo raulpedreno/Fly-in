@@ -51,8 +51,12 @@ def main() -> None:
     )
 
     turns = simulator.run()
-
     view = TerminalView()
+
+    print("RAW OUTPUT")
+    print("----------")
+    view.display_raw_turns(turns)
+
     view.display_banner()
     view.display_loading_sequence()
     view.display_turns(turns)
