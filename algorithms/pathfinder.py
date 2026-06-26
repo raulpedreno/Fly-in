@@ -15,6 +15,7 @@ class Pathfinder:
     def find_path(self, start: Zone, end: Zone) -> list[Zone]:
         """Find the lowest-cost path between two zones using Dijkstra."""
 
+## (cost, priority_penalty, counter, current_zone, path)
         queue: list[tuple[int, int, int, Zone, list[Zone]]] = []
         visited: set[str] = set()
         counter = 0

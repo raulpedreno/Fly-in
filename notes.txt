@@ -11,3 +11,19 @@ coste de cada Zona(Dijkstra):
     - blocked    -> no se puede entrar
 
 autopep8 --in-place --recursive --aggressive --aggressive .
+
+pathfinder:
+current_cost: coste acumulado hasta esa zona
+priority_penalty: para preferir priority
+counter: desempate para que el heap no se líe
+current_zone: dónde estamos
+path: lista de zonas recorridas hasta aquí
+
+
+
+El Simulator avanza turno a turno.
+Cada dron intenta moverse respetando capacidad de conexión, capacidad de zona y coste de movimiento.
+Uso estructuras de planificación para evitar colisiones.
+Restricted tarda 2 turnos.
+Si ningún dron puede moverse, hay deadlock.
+Termina cuando todos llegan al end

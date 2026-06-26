@@ -19,7 +19,7 @@ class Simulator:
         self.assignments = assignments
         self.positions: dict[int, int] = {
             drone.drone_id: 0 for drone in drones
-        }  # dron_id - indice_ruta
+        }  # drone_id -> index in its assigned path
         self.max_turns = 10000
 
     def _get_zone_occupancy(self) -> dict[str, int]:
@@ -62,11 +62,7 @@ class Simulator:
                 )
 
     def _validate_assignments(self) -> None:
-        """Validate drone path assignments.
-
-        Raises:
-            ValueError: If an assignment is missing or invalid.
-        """
+        """Validate drone path assignments."""
         for drone in self.drones:
             if drone.drone_id not in self.assignments:
                 raise ValueError(
@@ -121,11 +117,11 @@ class Simulator:
             planned_exits: dict[str, int] = {}
             planned_connections: dict[str, int] = {}
 
-            for drone in self.drones:  # un turno para todos los drones
+            for drone in self.drones:
                 if drone.is_delivered:
                     continue
 
-# drones en transito:-----------------------------------------------------
+# Process drones currently in transit (restricted zones require 2 turns)
                 if drone.in_transit_to is not None:
                     drone.remaining_turns -= 1
 
@@ -150,7 +146,7 @@ class Simulator:
 
                     continue  # !!!
 
-# preparacion del movimiento----------------------------------------------
+# Prepare movement for drones that are not in transit
                 path = self.assignments[drone.drone_id]
                 current_index = self.positions[drone.drone_id]
 
@@ -162,7 +158,7 @@ class Simulator:
                 next_zone = path[next_index]
                 current_zone = path[current_index]
 
-# comprobar capacidad de conexión-----------------------------------------
+# Check connection capacity before allowing the drone to move
                 planned_exits[current_zone.name] = (
                     planned_exits.get(current_zone.name, 0) + 1
                 )
@@ -191,7 +187,7 @@ class Simulator:
                     current_connection_entries + 1
                 )
 
-# comprobar capacidad de la zona destino----------------------------------
+# Check destination zone capacity (except for the end zone)
                 is_end_zone = next_zone == path[-1]
 
                 if not is_end_zone:
@@ -211,8 +207,7 @@ class Simulator:
 
                     planned_entries[next_zone.name] = entries_to_zone + 1
 
-# ejecutar el movimiento (normal vs
-# restricted)------------------------------------------------.
+# Execute movement: restricted zones require an extra turn (multi-turn movement)
                 if next_zone.zone_type == "restricted":
                     drone.in_transit_to = next_zone
                     drone.remaining_turns = 1
